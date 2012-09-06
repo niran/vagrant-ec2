@@ -12,7 +12,7 @@ Dir.chdir(ARGV[0]) do
     exit 1
   end
 
-  transfer_paths = ["cookbooks"]
+  transfer_paths = ["cookbooks", "roles", "data_bags"]
   transfer_paths.reject!{|path| not File.exists?(path)}
   open('transfer_paths', 'w'){|f| f.puts transfer_paths}
 

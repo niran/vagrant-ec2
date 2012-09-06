@@ -11,11 +11,11 @@ Dir.chdir(ARGV[0]) do
     puts res
     exit 1
   end
-  cookbooks_path = [JSON.parse(open('.cookbooks_path.json').read)].flatten
-  cookbooks_path.reject!{|path| not File.exists?(path)}
 
-  open('cookbook_list', 'w'){|f| f.puts cookbooks_path}
+  transfer_paths = ["cookbooks"]
+  transfer_paths.reject!{|path| not File.exists?(path)}
+  open('transfer_paths', 'w'){|f| f.puts transfer_paths}
 
-  `tar czf cookbooks.tgz --files-from cookbook_list 2> /dev/null`
-  `rm cookbook_list`
+  `tar czf cookbooks.tgz --files-from transfer_paths 2> /dev/null`
+  `rm transfer_paths`
 end

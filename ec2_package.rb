@@ -16,6 +16,6 @@ Dir.chdir(ARGV[0]) do
   transfer_paths.reject!{|path| not File.exists?(path)}
   open('transfer_paths', 'w'){|f| f.puts transfer_paths}
 
-  `tar czf cookbooks.tgz --files-from transfer_paths 2> /dev/null`
+  `tar czf chef_repository.tgz --files-from transfer_paths 2> /dev/null`
   `rm transfer_paths`
 end

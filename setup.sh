@@ -27,16 +27,17 @@ if [ "$IP" == "$PORT" ] ; then
 fi
 
 USERNAME=ubuntu
-COOKBOOK_TARBALL=$2/cookbooks.tgz
+CHEF_REPO_TARBALL_NAME=chef_repository.tgz
+CHEF_REPO_TARBALL_PATH=$2/$CHEF_REPO_TARBALL_NAME
 DNA=$2/dna.json
 
 #make sure this matches the CHEF_FILE_CACHE_PATH in `bootstrap.sh`
 CHEF_FILE_CACHE_PATH=/tmp/cheftime
 
 #Upload everything to the home directory (need to use sudo to copy over to $CHEF_FILE_CACHE_PATH and run chef)
-echo "Uploading cookbooks tarball and dna.json"
+echo "Uploading chef repository tarball and dna.json"
 scp -i $EC2_SSH_PRIVATE_KEY -r -P $PORT \
-  $COOKBOOK_TARBALL \
+  $CHEF_REPO_TARBALL_PATH \
   $DNA \
   $USERNAME@$IP:.
 
@@ -52,6 +53,6 @@ fi
 
 #Okay, run it.
 eval "ssh -t -p \"$PORT\" -l \"$USERNAME\" -i \"$EC2_SSH_PRIVATE_KEY\" $USERNAME@$IP \"sudo -i sh -c '\
-cp -r /home/$USERNAME/cookbooks.tgz $CHEF_FILE_CACHE_PATH && \
+cp -r /home/$USERNAME/$CHEF_REPO_TARBALL_NAME $CHEF_FILE_CACHE_PATH && \
 cp -r /home/$USERNAME/dna.json $CHEF_FILE_CACHE_PATH && \
-chef-solo -c $CHEF_FILE_CACHE_PATH/solo.rb -j $CHEF_FILE_CACHE_PATH/dna.json -r $CHEF_FILE_CACHE_PATH/cookbooks.tgz'\""
+chef-solo -c $CHEF_FILE_CACHE_PATH/solo.rb -j $CHEF_FILE_CACHE_PATH/dna.json -r $CHEF_FILE_CACHE_PATH/$CHEF_REPO_TARBALL_NAME'\""

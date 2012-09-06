@@ -52,11 +52,6 @@ Note: fixed problem (tar command does not have --transform option) on MacOS X
         chef.json[:run_list] = chef.run_list
         f.write chef.json.to_json
       end
-        open('.cookbooks_path.json', 'w') do |f|
-        f.puts JSON.generate([chef.cookbooks_path]
-                               .flatten
-                               .map{|x| x})
-      end
     end
 
 

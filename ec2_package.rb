@@ -11,28 +11,13 @@ Dir.chdir(ARGV[0]) do
     puts res
     exit 1
   end
-  CookbooksPath = [JSON.parse(open('.cookbooks_path.json').read)].flatten
+  cookbooks_path = [JSON.parse(open('.cookbooks_path.json').read)].flatten
+  cookbooks_path.reject!{|path| not File.exists?(path)}
 
-  recipe_names = JSON.parse(open('dna.json').read)["run_list"].map{|x|
-    x.gsub('recipe', '').gsub(/(\[|\])/, '').gsub(/::.*$/, '')
-  }.uniq
+  open('cookbook_list', 'w'){|f| f.puts cookbooks_path}
 
-  open('recipe_list', 'w'){|f|
-    f.puts recipe_names.map{|x|
-
-      paths = CookbooksPath.map{|cookbook_path|
-        "#{cookbook_path}/#{x}"
-      }
-      paths.reject!{|path| not File.exists?(path)}
-
-      raise "Multiple cookbooks '#{x}' exist within `chef.cookbooks_path`; I'm not sure which one to use" if paths.length > 1
-      raise "I can't find any cookbooks called '#{x}'" if paths.length == 0
-
-      paths[0]
-    }
-  }
   #Have tar chop off all of the relative file business prefixes so we can just
   #upload everything to the same cookbooks directory
-  `tar czf cookbooks.tgz --files-from recipe_list 2> /dev/null`
-  `rm recipe_list`
+  `tar czf cookbooks.tgz --files-from cookbook_list 2> /dev/null`
+  `rm cookbook_list`
 end

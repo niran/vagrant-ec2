@@ -1,11 +1,11 @@
 #!/usr/bin/env ruby
-#Make a tarball of only the recipes called in dna.json
+#Make a tarball of only the recipes called in ec2-dna.json
 #Takes as an argument the path to a Vagrant VM's folder.
 require 'rubygems'
 require 'json'
 
 Dir.chdir(ARGV[0]) do
-  #run vagrant to parse the `Vagrantfile` and write out `dna.json` and `.cookbooks_path.json`.
+  #run vagrant to parse the `Vagrantfile` and write out `ec2-dna.json` and `.cookbooks_path.json`.
   res = `vagrant`
   if $?.exitstatus != 0
     puts res

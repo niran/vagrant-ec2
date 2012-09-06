@@ -48,7 +48,7 @@ Note: fixed problem (tar command does not have --transform option) on MacOS X
       <your provisioning here>
 
       require 'json'
-      open('dna.json', 'w') do |f|
+      open('ec2-dna.json', 'w') do |f|
         chef.json[:run_list] = chef.run_list
         f.write chef.json.to_json
       end

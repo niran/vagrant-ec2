@@ -12,8 +12,8 @@ fi
 
 
 
-#Run the Ruby script that reads Vagrantfile to make dna.json and cookbook tarball
-echo "Making cookbooks tarball and dna.json"
+#Run the Ruby script that reads Vagrantfile to make ec2-dna.json and cookbook tarball
+echo "Making cookbooks tarball and ec2-dna.json"
 ruby `dirname $0`/ec2_package.rb $2
 
 
@@ -29,16 +29,17 @@ fi
 USERNAME=ubuntu
 CHEF_REPO_TARBALL_NAME=chef_repository.tgz
 CHEF_REPO_TARBALL_PATH=$2/$CHEF_REPO_TARBALL_NAME
-DNA=$2/dna.json
+JSON_CONFIG_NAME=ec2-dna.json
+JSON_CONFIG_PATH=$2/$JSON_CONFIG_NAME
 
 #make sure this matches the CHEF_FILE_CACHE_PATH in `bootstrap.sh`
 CHEF_FILE_CACHE_PATH=/tmp/cheftime
 
 #Upload everything to the home directory (need to use sudo to copy over to $CHEF_FILE_CACHE_PATH and run chef)
-echo "Uploading chef repository tarball and dna.json"
+echo "Uploading chef repository tarball and ec2-dna.json"
 scp -i $EC2_SSH_PRIVATE_KEY -r -P $PORT \
   $CHEF_REPO_TARBALL_PATH \
-  $DNA \
+  $JSON_CONFIG_PATH \
   $USERNAME@$IP:.
 
 echo "Running chef-solo"
@@ -54,5 +55,5 @@ fi
 #Okay, run it.
 eval "ssh -t -p \"$PORT\" -l \"$USERNAME\" -i \"$EC2_SSH_PRIVATE_KEY\" $USERNAME@$IP \"sudo -i sh -c '\
 cp -r /home/$USERNAME/$CHEF_REPO_TARBALL_NAME $CHEF_FILE_CACHE_PATH && \
-cp -r /home/$USERNAME/dna.json $CHEF_FILE_CACHE_PATH && \
-chef-solo -c $CHEF_FILE_CACHE_PATH/solo.rb -j $CHEF_FILE_CACHE_PATH/dna.json -r $CHEF_FILE_CACHE_PATH/$CHEF_REPO_TARBALL_NAME'\""
+cp -r /home/$USERNAME/$JSON_CONFIG_NAME $CHEF_FILE_CACHE_PATH && \
+chef-solo -c $CHEF_FILE_CACHE_PATH/solo.rb -j $CHEF_FILE_CACHE_PATH/$JSON_CONFIG_NAME -r $CHEF_FILE_CACHE_PATH/$CHEF_REPO_TARBALL_NAME'\""

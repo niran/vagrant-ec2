@@ -5,8 +5,9 @@ set -e -x
 
 #Config
 export DEBIAN_FRONTEND=noninteractive
-export CHEF_COOKBOOK_PATH=/tmp/cheftime/cookbooks
 export CHEF_FILE_CACHE_PATH=/tmp/cheftime
+export CHEF_COOKBOOK_PATH=$CHEF_FILE_CACHE_PATH/cookbooks
+export CHEF_ROLE_PATH=$CHEF_FILE_CACHE_PATH/roles
 
 
 mkdir -p $CHEF_FILE_CACHE_PATH
@@ -15,7 +16,7 @@ mkdir -p $CHEF_COOKBOOK_PATH
 #chef solo ruby file
 echo "file_cache_path \"$CHEF_FILE_CACHE_PATH\"
 cookbook_path \"$CHEF_COOKBOOK_PATH\"
-role_path []
+role_path \"$CHEF_ROLE_PATH\"
 log_level :debug" > $CHEF_FILE_CACHE_PATH/solo.rb
 
 

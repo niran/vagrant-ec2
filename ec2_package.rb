@@ -16,8 +16,6 @@ Dir.chdir(ARGV[0]) do
 
   open('cookbook_list', 'w'){|f| f.puts cookbooks_path}
 
-  #Have tar chop off all of the relative file business prefixes so we can just
-  #upload everything to the same cookbooks directory
   `tar czf cookbooks.tgz --files-from cookbook_list 2> /dev/null`
   `rm cookbook_list`
 end
